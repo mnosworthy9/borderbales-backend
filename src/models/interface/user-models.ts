@@ -32,6 +32,14 @@ declare namespace UserModels{
     is_admin?: boolean;
     created_at?: Date;
   }
+
+  /**
+   * signs up a user
+   */
+  interface IUserSignupQuery {
+    id: number,
+    is_admin: boolean
+  }
   
   /**
    * Query result for user login

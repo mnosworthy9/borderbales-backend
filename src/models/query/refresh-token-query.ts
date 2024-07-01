@@ -8,18 +8,22 @@ import { db } from "../database/connection";
  */
 async function insertRefreshToken (userId: number, refreshToken: string): Promise<boolean> {
   const exists: number[] = await db.query(
-    `SELECT "id" FROM "refresh_token" WHERE "id" = ${userId}`
+    `SELECT "id" FROM "refresh_token" WHERE "id" = ${userId}` // can improve the sql here 
   );
-  
-  if(exists[0] === null){
 
-    const result: {token: string}[] = await db.query(
+  console.log(exists);
+  
+  
+  if(exists[0] === undefined){
+
+    const token: string = await db.query(
       `INSERT INTO "refresh_token" ("id", "token")
       VALUES (${userId}, '${refreshToken}')
       RETURNING "token"`
     );
-      
-    if(result[0].token === refreshToken) {
+    console.log(token);
+    
+    if(token === refreshToken) {
       return true;
     }
     return false;
@@ -39,6 +43,23 @@ async function insertRefreshToken (userId: number, refreshToken: string): Promis
   
 }
 
+/**
+ * checks if the user refresh token matches
+ * @param userId 
+ * @param refreshToken 
+ */
+export const checkRefreshToken = async (userId: number, refreshToken: string): Promise<boolean> => {
+  const check: boolean = await db.query(
+    `SELECT EXISTS(SELECT 1 FROM refresh_token
+    WHERE id = ${userId}
+    AND token = ${refreshToken})`
+  );
+
+  return check;
+}
+
 export default {
   insertRefreshToken,
 } as const;
+
+// move to database /views 

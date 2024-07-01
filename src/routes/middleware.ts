@@ -1,7 +1,7 @@
 import StatusCodes from "http-status-codes";
 import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken"
 
-import { UserRoles } from "src/models(nn)/user-model";
 import { cookieProps } from "@routes/secure/user-router";
 import jwtUtil from "@util/jwt-util";
 
@@ -10,6 +10,10 @@ import jwtUtil from "@util/jwt-util";
 const { UNAUTHORIZED } = StatusCodes;
 const jwtNotPresentErr = "JWT not present in signed cookie.";
 
+enum UserRoles {
+    Admin,
+    User
+}
 
 /**
  * Middleware to verify if user is an admin.
@@ -21,19 +25,19 @@ const jwtNotPresentErr = "JWT not present in signed cookie.";
  */
 export async function adminMw(req: Request, res: Response, next: NextFunction) {
     try {
-        // Get json-web-token
-        const jwt: string = req.signedCookies[cookieProps.key];
-        if (!jwt) {
-            throw Error(jwtNotPresentErr);
-        }
-        // Make sure user role is an admin
-        const clientData = await jwtUtil.decode(jwt);
-        if (typeof clientData === "object" && clientData.role === UserRoles.Admin) {
-            res.locals.sessionUser = clientData;
-            next();
-        } else {
-            throw Error(jwtNotPresentErr);
-        }
+        if (req.headers.authorization !== undefined) {
+            const accessToken = req.headers.authorization.split(" ")[1]
+            try {
+              if (process.env.JWT_ACCESS_SECRET !== undefined) {
+                jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET);
+              }
+              next()
+            } catch (error) {
+              res.sendStatus(401)
+            }
+          } else {
+            res.sendStatus(401)
+          }
     } catch (err) {
         return res.status(UNAUTHORIZED).json({
             error: err.message,

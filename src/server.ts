@@ -47,9 +47,7 @@ app.use("/secure/api", authMiddleware, SecureRouter);
 app.use((err: Error | CustomError, _: Request, res: Response) => {
     logger.err(err, true);
     const status = (err instanceof CustomError ? err.HttpStatus : StatusCodes.BAD_REQUEST);
-    return res.status(status).json({
-        error: err.message,
-    });
+    return status;
 });
 
 

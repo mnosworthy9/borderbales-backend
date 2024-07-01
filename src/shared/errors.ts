@@ -44,3 +44,13 @@ export class UnauthorizedError extends CustomError {
         super(UnauthorizedError.Msg, UnauthorizedError.HttpStatus);
     }
 }
+
+export class ConstraintViolationError extends Error {
+    public constraintName: string;
+  
+    constructor(constraintName: string, message: string) {
+      super(message);
+      this.name = "ConstraintViolationError";
+      this.constraintName = constraintName;
+    }
+  }

@@ -1,5 +1,6 @@
 import { Request, Response, Router } from "express";
 import StatusCodes from "http-status-codes";
+import userController from "src/controllers/user-controller";
 
 
 // Constants
@@ -10,6 +11,7 @@ const { OK } = StatusCodes;
 export const p = {
     login: "/login",
     logout: "/logout",
+    refreshAccessToken: "/access-token"
 } as const;
 
 // Cookie Properties
@@ -34,6 +36,8 @@ router.get(p.logout, (_: Request, res: Response) => {
     res.clearCookie(key, options);
     return res.status(OK).end();
 });
+
+
 
 
 // Export router

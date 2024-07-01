@@ -1,5 +1,7 @@
+import { isNullOrUndefined } from "util";
 import { db } from "../database/connection";
 import UserModels from "../interface/user-models";
+import { ConstraintViolationError } from "@shared/errors";
 
 /**
  * @function getUserByEmail :async - get user by email
@@ -21,14 +23,23 @@ async function getUserByEmail (email: string): Promise<UserModels.IUserLoginQuer
  * @param {string} password:string - password of user
  * @returns {Promise<number>} Promise<number>
  */
-async function signupUser (email: string, password: string): Promise<number> {
-  const result = await db.query(
-    `INSERT INTO "user" ("email", "password")
-    VALUES ('${email}', '${password}')
-    RETURNING "id"`);
-  return result;
-}
+async function signupUser (email: string, password: string): Promise<UserModels.IUserSignupQuery | string> {
+  try {
 
+    const result: UserModels.IUserSignupQuery | string = await db.query(
+      `INSERT INTO "user" ("email", "password")
+      VALUES ('${email}', '${password}')
+      RETURNING "id"`);
+      return result;
+  } 
+  catch (e) {
+    if (e.constraint === "unq_email_user")
+      return `EMAIL: ${email} already exists.`
+    
+    console.error(e);
+    return "Error signing up user."
+  }
+}
 /**
  * @function signupUser :async - check if the user exists based on email
  * @param {string} email:string - email of user
