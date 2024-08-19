@@ -1,0 +1,43 @@
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+- group: Backend
+- group: Docker
+- name: imageTag
+  value: '$(backendContainer)-$(Build.BuildId)'
+- name: dockerHubServiceConnection
+  value: 'Docker Hub'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '20.16.0'
+  displayName: 'Install Node.js'
+  
+- script: |
+    npm install
+    npm run build
+  displayName: 'Build Node.js application'
+  
+- task: Docker@2
+  displayName: 'Build Docker image for front-end'
+  inputs:
+    command: 'build'
+    containerRegistry: $(dockerHubServiceConnection)
+    repository: '$(DockerUsername)/$(DockerRepo)'
+    Dockerfile: '**/Dockerfile'
+    tags: |
+      $(imageTag)
+
+- task: Docker@2
+  displayName: 'Push Docker image to Docker Hub'
+  inputs:
+    command: 'push'
+    containerRegistry: $(dockerHubServiceConnection)
+    repository: '$(DockerUsername)/$(DockerRepo)'
+    tags: |
+      $(imageTag)
