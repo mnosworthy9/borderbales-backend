@@ -1,4 +1,3 @@
-import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import path from "path";
 import helmet from "helmet";
@@ -11,7 +10,6 @@ import "express-async-errors";
 import BaseRouter from "./routes/non-secure/api";
 import SecureRouter from "./routes/secure/api-secure";
 import logger from "jet-logger";
-import { cookieProps } from "@routes/secure/user-router";
 import { CustomError } from "@shared/errors";
 import authMiddleware from "./auth/auth-middleware";
 
@@ -25,17 +23,6 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-app.use(cookieParser(cookieProps.secret));
-
-// Show routes called in console during development
-if (process.env.NODE_ENV === "development") {
-    app.use(morgan("dev"));
-}
-
-// Security
-if (process.env.NODE_ENV === "production") {
-    app.use(helmet());
-}
 
 app.use(cors());
 
@@ -68,17 +55,6 @@ app.use(express.static(staticDir));
 app.get("/", (_: Request, res: Response) => {
     res.sendFile("login.html", {root: viewsDir});
 });
-
-// Redirect to login if not logged in.
-app.get("/users", (req: Request, res: Response) => {
-    const jwt = req.signedCookies[cookieProps.key];
-    if (!jwt) {
-        res.redirect("/");
-    } else {
-        res.sendFile("users.html", {root: viewsDir});
-    }
-});
-
 
 
 /************************************************************************************
