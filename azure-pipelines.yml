@@ -13,11 +13,6 @@ variables:
   value: 'Docker Hub'
 
 steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '20.16.0'
-  displayName: 'Install Node.js'
-  
 - task: Docker@2
   displayName: 'Build Docker image for backend'
   inputs:
