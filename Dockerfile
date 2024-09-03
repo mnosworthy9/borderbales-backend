@@ -1,4 +1,4 @@
-FROM arm64v8/node:20.16.0-alpine
+FROM node:20.16.0-alpine
 
 ARG JWT_SECRET
 ARG JWT_ACCESS_SECRET
