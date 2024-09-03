@@ -12,8 +12,6 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-USER node
-
 RUN npm NODE_ENV=production install
 
 COPY . .
