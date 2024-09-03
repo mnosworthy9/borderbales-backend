@@ -18,13 +18,8 @@ steps:
     versionSpec: '20.16.0'
   displayName: 'Install Node.js'
   
-- script: |
-    npm install
-    npm run build
-  displayName: 'Build Node.js application'
-  
 - task: Docker@2
-  displayName: 'Build Docker image for front-end'
+  displayName: 'Build Docker image for backend'
   inputs:
     command: 'build'
     containerRegistry: $(dockerHubServiceConnection)
