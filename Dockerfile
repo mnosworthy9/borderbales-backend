@@ -1,4 +1,4 @@
-FROM node:20.16.0-alpine
+FROM arm64v8/node:20.16.0-alpine
 
 ARG JWT_SECRET
 ARG JWT_ACCESS_SECRET
@@ -12,7 +12,7 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-RUN npm --verbose install
+RUN npm NODE_ENV=production install
 
 COPY . .
 
