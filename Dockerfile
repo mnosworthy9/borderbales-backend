@@ -11,6 +11,8 @@ ENV NODE_ENV=production
 
 WORKDIR /usr/src/app
 
+RUN apk add --no-cache python3 make g++
+
 COPY package*.json ./
 
 RUN npm install

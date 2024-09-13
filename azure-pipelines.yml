@@ -26,6 +26,7 @@ steps:
       --build-arg JWT_SECRET=$(JWT_SECRET)
       --build-arg JWT_ACCESS_SECRET=$(JWT_ACCESS_SECRET)
       --build-arg JWT_REFRESH_SECRET=$(JWT_REFRESH_SECRET)
+      --platform=linux/arm64
 
 - task: Docker@2
   displayName: 'Push Docker image to Docker Hub'
