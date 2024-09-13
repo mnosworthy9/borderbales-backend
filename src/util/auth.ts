@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { ITokens } from "src/controllers/user-controller";
+import { ITokens } from "./../controllers/user-controller";
 
 /**
  * 

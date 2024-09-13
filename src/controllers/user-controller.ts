@@ -1,9 +1,9 @@
-import UserQuery from "src/models/query/user-query";
-import RefreshQuery from "src/models/query/refresh-token-query";
+import UserQuery from "./../models/query/user-query";
+import RefreshQuery from "./../models/query/refresh-token-query";
 import jwt from "jsonwebtoken";
 import randomString from "randomstring";
 
-import UserModels from "src/models/interface/user-models";
+import UserModels from "./../models/interface/user-models";
 import { CreateRefreshAndAccessToken } from "@util/auth";
 
 const jwtSecret = (process.env.JWT_SECRET || randomString.generate(100));
