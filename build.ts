@@ -18,7 +18,7 @@ import { log, error, info, warn } from 'console';
 
 function remove(loc: string): Promise<void> {
     return new Promise((res, rej) => {
-        return fs.remove(loc, (err) => {
+        return fs.remove(loc, (err:  Error | null) => {
             return (!!err ? rej(err) : res());
         });
     });
