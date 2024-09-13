@@ -1,4 +1,4 @@
-FROM node:20.16.0-alpine
+FROM node:20.16.0
 
 ARG JWT_SECRET
 ARG JWT_ACCESS_SECRET
@@ -10,8 +10,6 @@ ENV JWT_REFRESH_SECRET=$JWT_REFRESH_SECRET
 ENV NODE_ENV=production
 
 WORKDIR /usr/src/app
-
-RUN apk add --no-cache python3 make g++
 
 COPY package*.json ./
 
