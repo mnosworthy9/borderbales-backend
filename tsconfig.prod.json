@@ -1,7 +1,13 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "sourceMap": false
+    "sourceMap": false,
+    "module": "commonjs",
+    "target": "es6",
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "strict": true,
+    "types": ["node", "fs-extra"]
   },
   "exclude": [
     "spec",
