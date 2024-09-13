@@ -2,7 +2,7 @@
   "name": "express-auth",
   "version": "0.0.0",
   "scripts": {
-    "build": "tsc --verbose",
+    "build": "tsc",
     "lint": "eslint . --ext .ts",
     "fix": "eslint . --ext .ts --fix",
     "start": "node -r module-alias/register ./dist",

@@ -22,7 +22,7 @@ ENV JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET}
 ENV JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
 
 # Build the application (assuming you have a build script in package.json)
-RUN npm run build
+RUN npm run build --verbose
 
 # Expose the port the app runs on
 EXPOSE 3000
