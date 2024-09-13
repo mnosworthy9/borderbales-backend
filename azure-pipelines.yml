@@ -13,7 +13,7 @@ variables:
   value: 'Docker Hub'
 
 steps:
-- task: Docker@2
+- task: Docker@1
   displayName: 'Build Docker image for backend'
   inputs:
     command: 'build'
