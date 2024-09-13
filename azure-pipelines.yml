@@ -13,6 +13,12 @@ variables:
   value: 'Docker Hub'
 
 steps:
+- script: |
+      sudo apt-get update
+      sudo apt-get install -y qemu qemu-user-static binfmt-support
+      docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    displayName: 'Install QEMU for ARM64 emulation'
+    
 - task: Docker@2
   displayName: 'Build Docker image for backend'
   inputs:
