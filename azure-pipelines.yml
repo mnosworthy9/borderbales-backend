@@ -7,6 +7,7 @@ pool:
 variables:
 - group: Backend
 - group: Docker
+- group: Database
 - name: imageTag
   value: '$(BackendContainer)-$(Build.BuildId)'
 - name: dockerHubServiceConnection
