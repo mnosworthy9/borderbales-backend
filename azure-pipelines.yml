@@ -32,6 +32,11 @@ steps:
       --build-arg JWT_SECRET=$(JWT_SECRET)
       --build-arg JWT_ACCESS_SECRET=$(JWT_ACCESS_SECRET)
       --build-arg JWT_REFRESH_SECRET=$(JWT_REFRESH_SECRET)
+      --build-arg DB_USER=$(PG_USER)
+      --build-arg DB_PASS=$(PGPASSWORD)
+      --build-arg DB_NAME=$(PG_DATABASE)
+      --build-arg DB_PORT=$(PG_PORT)
+      --build-arg DB_HOST=$(PG_HOST)
       --platform linux/arm64
     buildContext: '$(Build.SourcesDirectory)'
 
