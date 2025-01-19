@@ -35,7 +35,7 @@ ENV POSTGRES_HOST=${DB_HOST}
 RUN npm run build --verbose
 
 # Expose the port the app runs on
-EXPOSE 3000
+EXPOSE 4000
 
 # Start the Node.js app
 CMD ["npm", "start"]
