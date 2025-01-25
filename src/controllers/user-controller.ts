@@ -16,13 +16,13 @@ const jwtSecret = (process.env.JWT_SECRET || randomString.generate(100));
  * @returns the jwt token.
  */
 async function signup(credentials: UserModels.IAuthRequest): Promise<string> {
-  const user: UserModels.ISignupQuery | string = await UserQuery.signup(credentials);
+  const user: UserModels.ITokenInfo | string = await UserQuery.signup(credentials);
   if(typeof user === "string"){
     console.error(user);
     return user; // need a more specific error here
   }
 
-  return handleTokens({...user, ...credentials})
+  return handleTokens(user)
 }
 
 /**
@@ -30,7 +30,7 @@ async function signup(credentials: UserModels.IAuthRequest): Promise<string> {
  * @param user - User info to create tokens.
  * @returns A jwt for user.
  */
-async function handleTokens(user: UserModels.ILoginQuery) {
+async function handleTokens(user: UserModels.ITokenInfo) {
   const tokens: AuthModels.ITokens | string = Auth.createTokens(user.id, user.is_admin);
 
   if (typeof tokens === "string") {

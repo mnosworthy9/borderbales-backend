@@ -20,10 +20,10 @@ async function getUserByEmail (email: string): Promise<UserModels.ILoginQuery | 
  * @param credentials emails and password for user.
  * @returns the user id and if the user is an admin.
  */
-async function signup (credentials: UserModels.IAuthRequest): Promise<UserModels.ISignupQuery | string> {
+async function signup (credentials: UserModels.IAuthRequest): Promise<UserModels.ITokenInfo | string> {
   try {
 
-    const result: [UserModels.ISignupQuery] | string = await db.query(
+    const result: [UserModels.ITokenInfo] | string = await db.query(
       `INSERT INTO "user" ("email", "password")
       VALUES ('${credentials.email}', '${credentials.password}')
       RETURNING "id", "is_admin"`);

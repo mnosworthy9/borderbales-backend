@@ -30,7 +30,7 @@ declare namespace UserModels{
    * @property email email of user
    * @property password password of user
    */
-  interface ISignupQuery {
+  interface ITokenInfo {
     id: number,
     is_admin: boolean
   }
