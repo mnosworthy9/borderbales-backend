@@ -1,8 +1,9 @@
 import { Request, Response, Router } from "express";
-import userController from "./../../controllers/user-controller";
 
+import UserController from "./../../controllers/user-controller";
 
-// Constants
+import UserModels from "src/models/interface/user-models";
+
 const router = Router();
 
 // Paths
@@ -17,8 +18,8 @@ export const p = {
  * @returns true or false
  */
 router.post(p.signup, async (req: Request, res: Response) => {
-    const {email, password} = req.body;
-    const result = await userController.signupUser(email, password);
+    const credentials: UserModels.IAuthRequest = req.body;
+    const result = await UserController.signup(credentials);
     return res.send(result);
 });
 
@@ -28,10 +29,9 @@ router.post(p.signup, async (req: Request, res: Response) => {
  * @returns tokens for access and refresh. also send is_admin bool
  */
 router.post(p.login, async (req: Request, res: Response) => {
-    const { email, password } = req.body;
-    const result = await userController.loginUser(email, password);
+    const credentials: UserModels.IAuthRequest = req.body;
+    const result = await UserController.login(credentials);
     return res.send(result);
 });
 
-// Export default
 export default router;

@@ -1,15 +1,13 @@
-import { isNullOrUndefined } from "util";
 import { db } from "../database/connection";
 import UserModels from "../interface/user-models";
-import { ConstraintViolationError } from "@shared/errors";
 
 /**
- * @function getUserByEmail :async - get user by email
- * @param {string} email:string - email of user
- * @returns {UserModels.IUserLoginQuery | false} IUserLoginQuery | false
+ * @function getUserByEmail - Get user by email
+ * @param email - Email of the user.
+ * @returns - Details of the user to make tokens.
  */
-async function getUserByEmail (email: string): Promise<UserModels.IUserLoginQuery | false> {
-  const result: UserModels.IUserLoginQuery[] = await db.query(
+async function getUserByEmail (email: string): Promise<UserModels.ILoginQuery | false> {
+  const result: UserModels.ILoginQuery[] = await db.query(
     `SELECT "id", "password", "is_admin" FROM "user" WHERE "email" = '${email}'`);
   if(result.length === 0) {
     return false;
@@ -18,45 +16,42 @@ async function getUserByEmail (email: string): Promise<UserModels.IUserLoginQuer
 }
 
 /**
- * @function signupUser :async - signup user
- * @param {string} email:string - email of user
- * @param {string} password:string - password of user
- * @returns {Promise<number>} Promise<number>
+ * @function signup signup user.
+ * @param credentials emails and password for user.
+ * @returns the user id and if the user is an admin.
  */
-async function signupUser (email: string, password: string): Promise<UserModels.IUserSignupQuery | string> {
+async function signup (credentials: UserModels.IAuthRequest): Promise<UserModels.ISignupQuery | string> {
   try {
 
-    const result: UserModels.IUserSignupQuery | string = await db.query(
+    const result: [UserModels.ISignupQuery] | string = await db.query(
       `INSERT INTO "user" ("email", "password")
-      VALUES ('${email}', '${password}')
-      RETURNING "id"`);
-      return result;
+      VALUES ('${credentials.email}', '${credentials.password}')
+      RETURNING "id", "is_admin"`);
+      return result[0];
   } 
   catch (e) {
     if (e.constraint === "unq_email_user")
-      return `EMAIL: ${email} already exists.`
+      return `EMAIL: ${credentials.email} already exists.`
     
     console.error(e);
     return "Error signing up user."
   }
 }
+
 /**
- * @function signupUser :async - check if the user exists based on email
- * @param {string} email:string - email of user
- * @returns {boolean} boolean
+ * @function exists - check if the user exists based on email
+ * @param email - email of user
+ * @returns true if the users email exists.
  */
-async function userExists (email: string): Promise<boolean> {
+async function exists (email: string): Promise<boolean> {
   const result = await db.query(
     `SELECT "id" FROM "user" WHERE "email" = '${email}'`);
 
-  if(result.length === 0) {
-    return false;
-  }
-  return true;
+  return result.length !== 0;
 }
 
 export default {
   getUserByEmail,
-  signupUser,
-  userExists
+  signup,
+  exists
 } as const;

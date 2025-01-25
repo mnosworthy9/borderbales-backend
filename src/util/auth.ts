@@ -1,5 +1,6 @@
-import jwt from "jsonwebtoken";
-import { ITokens } from "./../controllers/user-controller";
+import jsonwebtoken from "jsonwebtoken";
+
+import AuthModels from "src/models/interface/auth-models";
 
 /**
  * 
@@ -7,7 +8,7 @@ import { ITokens } from "./../controllers/user-controller";
  * @param isAdmin 
  * @returns 
  */
-export const CreateRefreshAndAccessToken = (userId: number, isAdmin: boolean): ITokens | string => {
+const createTokens = (userId: number, isAdmin: boolean): AuthModels.ITokens | string => {
 
   const accessSecret: string | undefined = process.env.JWT_ACCESS_SECRET;
   const refreshSecret: string | undefined = process.env.JWT_REFRESH_SECRET;
@@ -15,9 +16,14 @@ export const CreateRefreshAndAccessToken = (userId: number, isAdmin: boolean): I
   if(accessSecret == undefined || refreshSecret == undefined)
     return "Error Getting access/refresh secret from env variables";
 
-  const accessToken: string = jwt.sign({userId: userId, isAdmin: isAdmin}, accessSecret, { expiresIn: "8h" });
+  const accessToken: string = jsonwebtoken.sign({userId: userId, isAdmin: isAdmin}, accessSecret, { expiresIn: "8h" });
 
-  const refreshToken: string = jwt.sign({ userId: userId }, refreshSecret, { expiresIn: "30d" });
+  const refreshToken: string = jsonwebtoken.sign({ userId: userId }, refreshSecret, { expiresIn: "30d" });
 
   return {accessToken: accessToken, refreshToken: refreshToken}
 }
+
+export default {
+  createTokens
+} as const;
+
