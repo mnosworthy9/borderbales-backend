@@ -1,11 +1,12 @@
-import UserQuery from "./../models/query/user-query";
-import RefreshQuery from "./../models/query/refresh-token-query";
 import jwt from "jsonwebtoken";
 import randomString from "randomstring";
 
 import UserModels from "./../models/interface/user-models";
-import Auth from "src/util/auth";
 import AuthModels from "src/models/interface/auth-models";
+
+import UserQuery from "./../models/query/user-query";
+import RefreshQuery from "./../models/query/refresh-token-query";
+import Auth from "@util/auth";
 
 const jwtSecret = (process.env.JWT_SECRET || randomString.generate(100));
 
@@ -21,24 +22,33 @@ async function signup(credentials: UserModels.IAuthRequest): Promise<string> {
     return user; // need a more specific error here
   }
 
-  const tokens: AuthModels.ITokens | string = Auth.createTokens(user.id, user.is_admin);
-
-    if(typeof tokens === "string"){
-      console.error(tokens)
-      return "";
-    }
-
-    const refreshTokenUpdated: boolean = await RefreshQuery.upsert(user.id, tokens.refreshToken);
-
-    if(!refreshTokenUpdated)
-      return "Error updating refresh token";
-  
-    return jwt.sign(tokens, jwtSecret)
+  return handleTokens({...user, ...credentials})
 }
 
 /**
- * logs in user securley
- * @param credentials - 
+ * Creates tokens and adds them to database.
+ * @param user - User info to create tokens.
+ * @returns A jwt for user.
+ */
+async function handleTokens(user: UserModels.ILoginQuery) {
+  const tokens: AuthModels.ITokens | string = Auth.createTokens(user.id, user.is_admin);
+
+  if (typeof tokens === "string") {
+    console.error(tokens)
+    return "";
+  }
+
+  const refreshTokenUpdated: boolean = await RefreshQuery.upsert(user.id, tokens.refreshToken);
+
+  if (!refreshTokenUpdated)
+    return "Error updating refresh token";
+
+  return jwt.sign(tokens, jwtSecret)
+}
+
+/**
+ * logs in user securely
+ * @param credentials - Email and password for a user.
  * @returns true or false
  */
 async function login(credentials: UserModels.IAuthRequest): Promise<string> {
@@ -51,20 +61,8 @@ async function login(credentials: UserModels.IAuthRequest): Promise<string> {
   const isValid: boolean = (credentials.password === user.password);
 
   if (isValid) {
-    const tokens: AuthModels.ITokens | string = Auth.createTokens(user.id, user.is_admin);
+    return await handleTokens(user);
 
-    if(typeof tokens === "string"){
-      console.error(tokens)
-      return "";
-    }
-
-    const refreshTokenUpdated: boolean = await RefreshQuery.upsert(user.id, tokens.refreshToken);
-
-    if(!refreshTokenUpdated)
-      return "Error updating refresh token";
-  
-    return jwt.sign(tokens, jwtSecret)
-   
   } else {
     return "Incorrect password";
   }

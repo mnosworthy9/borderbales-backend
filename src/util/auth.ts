@@ -3,7 +3,7 @@ import jsonwebtoken from "jsonwebtoken";
 import AuthModels from "src/models/interface/auth-models";
 
 /**
- * 
+ * Create access and refresh token.
  * @param userId 
  * @param isAdmin 
  * @returns 
