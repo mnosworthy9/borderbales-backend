@@ -8,7 +8,7 @@ import AuthModels from "src/models/interface/auth-models";
  * @param isAdmin 
  * @returns 
  */
-const createTokens = (userId: number, isAdmin: boolean): AuthModels.ITokens | string => {
+export function createTokens (userId: number, isAdmin: boolean): AuthModels.ITokens | string {
 
   const accessSecret: string | undefined = process.env.JWT_ACCESS_SECRET;
   const refreshSecret: string | undefined = process.env.JWT_REFRESH_SECRET;
@@ -22,8 +22,4 @@ const createTokens = (userId: number, isAdmin: boolean): AuthModels.ITokens | st
 
   return {accessToken: accessToken, refreshToken: refreshToken}
 }
-
-export default {
-  createTokens
-} as const;
 

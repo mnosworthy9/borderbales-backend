@@ -3,7 +3,6 @@ import { adminMw } from "../middleware";
 import authRouter from "./user-router";
 import userRouter from "../non-secure/user-router";
 
-
 // Init
 const apiRouter = Router();
 

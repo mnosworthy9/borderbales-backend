@@ -4,7 +4,7 @@
  * @namespace UserModels
  * @description Contains interfaces and types for user-related operations
  */
-declare namespace UserModels{
+declare namespace UserModels {
 
   /**
    * Represents all variables in the user object.
@@ -20,7 +20,7 @@ declare namespace UserModels{
     password?: string;
     reputation?: number;
     sales?: number;
-    is_admin?: boolean;
+    isAdmin?: boolean;
     created_at?: Date;
   }
 
@@ -30,9 +30,9 @@ declare namespace UserModels{
    * @property email email of user
    * @property password password of user
    */
-  interface ITokenInfo {
+  interface ITokenData {
     id: number,
-    is_admin: boolean
+    isAdmin: boolean
   }
     
   /**
@@ -41,12 +41,12 @@ declare namespace UserModels{
    * @interface ILoginQuery
    * @property id The user's unique ID
    * @property password The user's password
-   * @property is_admin Indicates if the user is an admin
+   * @property isAdmin Indicates if the user is an admin
    */
   interface ILoginQuery {
     id: number;
     password: string;
-    is_admin: boolean;
+    isAdmin: boolean;
   }
 
   /**
@@ -55,12 +55,12 @@ declare namespace UserModels{
    * @interface ILoginRequest
    * @property accessToken Access token to be sent to the front end.
    * @property refreshToken Refresh token to be sent to the front end and database.
-   * @property is_admin Determine if the user is an admin.
+   * @property isAdmin Determine if the user is an admin.
    */
   interface ILoginRequest {
     accessToken: string;
     refreshToken: string;
-    is_admin: boolean;
+    isAdmin: boolean;
   }
 
   /**

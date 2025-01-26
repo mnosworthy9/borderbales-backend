@@ -1,4 +1,4 @@
-import {db} from "../database/connection";
+import { db } from "../../database/connection";
 
 /**
  * Insert or update refresh token into db
@@ -6,7 +6,7 @@ import {db} from "../database/connection";
  * @param refreshToken - refresh token
  * @returns The ID of the inserted refresh token
  */
-async function upsert (userId: number, refreshToken: string): Promise<boolean> {
+export async function upsertRefreshToken (userId: number, refreshToken: string): Promise<boolean> {
   return await db.query("SELECT upsert_refresh_token($1, $2)", [userId, refreshToken]);
 }
 
@@ -16,7 +16,7 @@ async function upsert (userId: number, refreshToken: string): Promise<boolean> {
  * @param refreshToken - Refresh token
  * @returns Boolean indicating if the token matches
  */
-const isMatch = async (userId: number, refreshToken: string): Promise<boolean> => {
+export async function checkRefreshTokenMatches (userId: number, refreshToken: string): Promise<boolean> {
   const result: [{exists: boolean}] = await db.query(
     "SELECT EXISTS (" +
        "SELECT 1 FROM \"refresh_token\"" +
@@ -26,9 +26,4 @@ const isMatch = async (userId: number, refreshToken: string): Promise<boolean> =
   );
 
   return result[0]?.exists ?? false;
-};
-
-export default {
-  upsert,
-  isMatch
-} as const;
+}
