@@ -1,6 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, Check } from "typeorm";
-import { Users } from "./users"; // Adjust the path according to your file structure
+import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, Check, OneToMany} from "typeorm";
+import { Users } from "./users";
+import {ProductReview} from "./product-review";
+import {Order} from "./order";
+import {Image} from "./image";
 
 /**
  *
@@ -28,4 +31,13 @@ export class Product {
 
     @Column({ type: 'boolean', default: false})
     has_image!: boolean;
+
+    @OneToMany(() => ProductReview, review => review.product)
+    reviews!: ProductReview[];
+
+    @OneToMany(() => Order, order => order.product)
+    orders!: Order[];
+
+    @OneToMany(() => Image, image => image.product)
+    images!: Image[];
 }

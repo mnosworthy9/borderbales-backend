@@ -5,12 +5,12 @@ dotenv.config();
 
 export const myDataSource = new DataSource({
     type: "postgres",
-    host: "localhost",
-    port: 3306,
-    username: "test",
-    password: "test",
-    database: "test",
-    entities: ["src/entity/*.js"],
+    host: process.env.POSTGRES_HOST,
+    port: Number(process.env.POSTGRES_PORT),
+    username: process.env.POSTGRES_USER,
+    password: process.env.POSTGRES_PASSWORD,
+    database: process.env.POSTGRES_DB,
+    entities: ["src/entity/*.ts"],
     logging: true,
     synchronize: true,
 })

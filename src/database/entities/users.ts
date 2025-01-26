@@ -1,5 +1,10 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {Entity, PrimaryGeneratedColumn, Column, Unique, Check, CreateDateColumn,} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, Unique, Check, CreateDateColumn, OneToOne, OneToMany,} from "typeorm";
+import {RefreshToken} from "./refresh-token";
+import {Product} from "./product";
+import {ProductReview} from "./product-review";
+import {Order} from "./order";
+import {BankDetails} from "./bank-details";
 
 /**
  *
@@ -39,4 +44,19 @@ export class Users {
 
     @CreateDateColumn({ type: "timestamp", default: () => "NOW()", name: "created_at" })
     createdAt!: Date;
+
+    @OneToOne(() => RefreshToken, refreshToken => refreshToken.user)
+    refreshToken?: RefreshToken;
+
+    @OneToMany(() => Product, product => product.user)
+    products?: Product[];
+
+    @OneToMany(() => ProductReview, productReview => productReview.user)
+    productReviews?: ProductReview[];
+
+    @OneToMany(() => Order, order => order.user)
+    orders?: Order[];
+
+    @OneToMany(() => BankDetails, bank => bank.user)
+    banks?: BankDetails;
 }
