@@ -27,7 +27,7 @@ export async function adminMw(req: Request, res: Response, next: NextFunction) {
                 jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET);
               }
               next()
-            } catch (error) {
+            } catch {
               res.sendStatus(401)
             }
           } else {

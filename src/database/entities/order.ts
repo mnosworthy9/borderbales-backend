@@ -1,16 +1,14 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, Column, CreateDateColumn } from "typeorm";
 import { Users } from "./users"; // Adjust path as per your directory structure
 import { Product } from "./product"; // Adjust path as per your directory structure
-import Constraints from "../constraints";
+import { OrderTableConstraints } from "../constraints";
 
 /**
  *
  */
 @Entity("order")
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export class Order {
-    @PrimaryGeneratedColumn({ primaryKeyConstraintName: Constraints.Order.PrimaryKey })
+    @PrimaryGeneratedColumn({ primaryKeyConstraintName: OrderTableConstraints.PrimaryKey })
     id!: number;
 
     @Column({ type: "int" })
@@ -23,13 +21,13 @@ export class Order {
     orderTime?: Date;
 
     @ManyToOne(() => Users, user => user.orders, { onDelete: "CASCADE" })
-    @JoinColumn({ name: "user_id", foreignKeyConstraintName: Constraints.Order.FKUserId })
+    @JoinColumn({ name: "user_id", foreignKeyConstraintName: OrderTableConstraints.FKUserId })
     user!: Users;
     @Column({ type: "uuid", name: "user_id" })
     userId!: string;
     
     @ManyToOne(() => Product, product => product.orders, { onDelete: "CASCADE" })
-    @JoinColumn({ name: "product_id", foreignKeyConstraintName: Constraints.Order.FKProductId })
+    @JoinColumn({ name: "product_id", foreignKeyConstraintName: OrderTableConstraints.FKProductId })
     product!: Product;
     @Column({ type: "int", name: "product_id" })
     productId!: number;

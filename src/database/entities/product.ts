@@ -1,18 +1,16 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn} from "typeorm";
 import { Users } from "./users";
 import {ProductReview} from "./product-review";
 import {Order} from "./order";
 import {Image} from "./image";
-import Constraints from "../constraints";
+import { ProductTableConstraints } from "../constraints";
 
 /**
  *
  */
 @Entity('product')
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export class Product {
-    @PrimaryGeneratedColumn({ primaryKeyConstraintName: Constraints.Product.PrimaryKey })
+    @PrimaryGeneratedColumn({ primaryKeyConstraintName: ProductTableConstraints.PrimaryKey })
     id!: number;
 
     @Column({ type: 'varchar', length: 100})
@@ -31,7 +29,7 @@ export class Product {
     has_image!: boolean;
     
     @ManyToOne(() => Users, user => user.products, { onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'user_id', foreignKeyConstraintName: Constraints.Product.FKUserId })
+    @JoinColumn({ name: 'user_id', foreignKeyConstraintName: ProductTableConstraints.FKUserId })
     user!: Users;
     @Column({ type: 'uuid', name: 'user_id' })
     userId!: string;

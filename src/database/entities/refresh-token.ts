@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {
     Entity,
     Column,
@@ -8,25 +7,24 @@ import {
     JoinColumn
 } from "typeorm";
 import { Users } from "./users"; // Adjust the import path according to your file structure
-import Constraints from "../constraints";
+import { RefreshTokenTableConstraints } from "../constraints";
 
 /**
  *
  */
 @Entity('refresh_token')
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export class RefreshToken {
 
-    @PrimaryColumn("uuid", { primaryKeyConstraintName: Constraints.RefreshToken.PrimaryKey })
+    @PrimaryColumn("uuid", { primaryKeyConstraintName: RefreshTokenTableConstraints.PrimaryKey })
     id!: string;
     
-    @Column({ type: 'varchar', length: 255, nullable: true})
+    @Column({ type: 'varchar', length: 512, nullable: true})
     token!: string;
     
-    @CreateDateColumn({ type: 'timestamp', default: () => "NOW()" })
+    @CreateDateColumn({ type: 'timestamp' })
     createdAt?: Date;
     
     @OneToOne(() => Users, user => user.refreshToken, { onDelete: 'CASCADE' })
-    @JoinColumn( { name: 'id', foreignKeyConstraintName: Constraints.RefreshToken.FKUserId })
+    @JoinColumn( { name: 'id', foreignKeyConstraintName: RefreshTokenTableConstraints.FKUserId })
     user!: Users;
 }

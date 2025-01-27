@@ -1,7 +1,7 @@
 import { myDataSource } from "src/database/app-data-source";
-import { db } from "../../database/connection";
 import { nameof } from "@util/functions";
 import { RefreshToken } from "src/database/entities/refresh-token";
+import { AuthDetails } from "@models/database/user-types";
 
 /**
  * Insert or update refresh token into db
@@ -9,15 +9,15 @@ import { RefreshToken } from "src/database/entities/refresh-token";
  * @param refreshToken - refresh token
  * @returns The ID of the inserted refresh token
  */
-export async function upsertRefreshToken (userId: number, refreshToken: string): Promise<boolean> {
-  await myDataSource.getRepository("RefreshToken")
+export async function upsertRefreshToken (authDetails: AuthDetails): Promise<boolean> {
+  const results = await myDataSource.getRepository<RefreshToken>(nameof(RefreshToken))
     .createQueryBuilder()
     .insert()
-    .values({ [nameof<RefreshToken>("id")]: userId, [nameof<RefreshToken>("token")]: refreshToken })
+    .values({ [nameof<RefreshToken>("id")]: authDetails.id, [nameof<RefreshToken>("token")]: authDetails.refreshToken })
     .orUpdate([nameof<RefreshToken>("token")], [nameof<RefreshToken>("id")])
     .execute();
 
-  return true;
+  return results?.raw?.length > 0;
 }
 
 /**
@@ -26,14 +26,7 @@ export async function upsertRefreshToken (userId: number, refreshToken: string):
  * @param refreshToken - Refresh token
  * @returns Boolean indicating if the token matches
  */
-export async function checkRefreshTokenMatches (userId: number, refreshToken: string): Promise<boolean> {
-  const result: [{exists: boolean}] = await db.query(
-    "SELECT EXISTS (" +
-       "SELECT 1 FROM \"refresh_token\"" +
-       "WHERE \"id\" = $1 AND \"token\" = $2" +
-    ")",
-    [userId, refreshToken]
-  );
-
-  return result[0]?.exists ?? false;
+export async function checkRefreshTokenMatches (authDetails: AuthDetails): Promise<boolean> {
+  return await myDataSource.getRepository<RefreshToken>(nameof(RefreshToken))
+    .existsBy({id: authDetails.id, token: authDetails.refreshToken});
 }

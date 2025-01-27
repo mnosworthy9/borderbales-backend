@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 
-import UserModels from "src/models/interface/user-models";
 import { loginUserController, signupUserController } from "@controllers/user-controller";
+import { UserCredentials } from "@models/database/user-types";
 
 const router = Router();
 
@@ -17,7 +17,7 @@ export const p = {
  * @returns true or false
  */
 router.post(p.signup, async (req: Request, res: Response) => {
-    const credentials: UserModels.IAuthRequest = req.body;
+    const credentials: UserCredentials = req.body;
     const result = await signupUserController(credentials);
     return res.send(result);
 });
@@ -25,10 +25,10 @@ router.post(p.signup, async (req: Request, res: Response) => {
 /**
  * login a user.
  * 
- * @returns tokens for access and refresh. also send isAdmin bool
+ * @returns tokens for access and refresh. also send bool
  */
 router.post(p.login, async (req: Request, res: Response) => {
-    const credentials: UserModels.IAuthRequest = req.body;
+    const credentials: UserCredentials = req.body;
     const result = await loginUserController(credentials);
     return res.send(result);
 });

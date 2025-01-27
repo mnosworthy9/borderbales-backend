@@ -1,15 +1,10 @@
-declare namespace AuthModels {
-
-	/**
-	 * the auth requested when user wants to login
-	 * 
-	 * @property refreshToken of user
-	 * @property accessToken of user
-	 */
-	export interface ITokens {
+/**
+ * The tokens returned for the user.
+ * 
+ * @property refreshToken of user.
+ * @property accessToken of user.
+ */
+export type AuthTokens = {
 	refreshToken: string,
 	accessToken: string,
-  }
-}
-
-export default AuthModels;
+};

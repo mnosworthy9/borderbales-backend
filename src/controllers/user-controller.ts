@@ -1,12 +1,13 @@
 import jwt from "jsonwebtoken";
 import randomString from "randomstring";
 
-import UserModels from "./../models/interface/user-models";
-import AuthModels from "src/models/interface/auth-models";
 import { createTokens } from "@util/auth";
 import { getUserByEmailQuery } from "@models/query/user-query";
 import { upsertRefreshToken } from "@models/query/refresh-token-query";
 import { signupUserQuery } from "@models/query/user-query"
+import { Users } from "src/database/entities/users";
+import { UserCredentials, LoginQuery } from "@models/database/user-types";
+import { AuthTokens } from "@models/interface/auth-models";
 
 const jwtSecret = (process.env.JWT_SECRET || randomString.generate(100));
 
@@ -15,14 +16,17 @@ const jwtSecret = (process.env.JWT_SECRET || randomString.generate(100));
  * @param credentials - email and password of the user.
  * @returns the jwt token.
  */
-export async function signupUserController(credentials: UserModels.IAuthRequest): Promise<string> {
-  const user: UserModels.ITokenData | string = await signupUserQuery(credentials);
-  if(typeof user === "string"){
-    console.error(user);
-    return user; // need a more specific error here
-  }
+export async function signupUserController(credentials: UserCredentials): Promise<string> {
+  const userId: Users["id"] | string = await signupUserQuery(credentials);
 
-  return handleTokens(user)
+  const tokens: AuthTokens | string = createTokens(userId);
+
+  const refreshTokenUpdated: boolean = await upsertRefreshToken({id: userId, refreshToken: tokens.refreshToken});
+
+  if (!refreshTokenUpdated)
+    return "Error updating refresh token";
+
+  return jwt.sign(tokens, jwtSecret)
 }
 
 /**
@@ -30,37 +34,19 @@ export async function signupUserController(credentials: UserModels.IAuthRequest)
  * @param credentials - Email and password for a user.
  * @returns true or false
  */
-export async function loginUserController(credentials: UserModels.IAuthRequest): Promise<string> {
+export async function loginUserController(credentials: UserCredentials): Promise<string> {
 
-  const user: UserModels.ILoginQuery | false = await getUserByEmailQuery(credentials.email);
+  const user: LoginQuery | false = await getUserByEmailQuery(credentials.email);
 
   if (!user) 
     return "User not found";
-  
-  const isValid: boolean = (credentials.password === user.password);
 
-  if (isValid) {
-    return await handleTokens(user);
-
-  } else {
+  if (credentials.password !== user.password) 
     return "Incorrect password";
-  }
-}
 
-/**
- * Creates tokens and adds them to database.
- * @param user - User info to create tokens.
- * @returns A jwt for user.
- */
-async function handleTokens(user: UserModels.ITokenData) {
-  const tokens: AuthModels.ITokens | string = createTokens(user.id, user.isAdmin);
+  const tokens: AuthTokens = createTokens(user.id);
 
-  if (typeof tokens === "string") {
-    console.error(tokens)
-    return "";
-  }
-
-  const refreshTokenUpdated: boolean = await upsertRefreshToken(user.id, tokens.refreshToken);
+  const refreshTokenUpdated: boolean = await upsertRefreshToken({id: user.id, refreshToken: tokens.refreshToken});
 
   if (!refreshTokenUpdated)
     return "Error updating refresh token";

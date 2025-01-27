@@ -29,7 +29,7 @@ app.use("/api", BaseRouter);
 app.use("/secure/api", authMiddleware, SecureRouter);
 
 // Error handling
-app.use((err: Error | CustomError, _: Request, res: Response) => {
+app.use((err: Error | CustomError) => {
     logger.err(err, true);
     const status = (err instanceof CustomError ? err.HttpStatus : StatusCodes.BAD_REQUEST);
     return status;
