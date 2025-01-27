@@ -1,4 +1,7 @@
+import { myDataSource } from "src/database/app-data-source";
 import { db } from "../../database/connection";
+import { nameof } from "@util/functions";
+import { RefreshToken } from "src/database/entities/refresh-token";
 
 /**
  * Insert or update refresh token into db
@@ -7,7 +10,14 @@ import { db } from "../../database/connection";
  * @returns The ID of the inserted refresh token
  */
 export async function upsertRefreshToken (userId: number, refreshToken: string): Promise<boolean> {
-  return await db.query("SELECT upsert_refresh_token($1, $2)", [userId, refreshToken]);
+  await myDataSource.getRepository("RefreshToken")
+    .createQueryBuilder()
+    .insert()
+    .values({ [nameof<RefreshToken>("id")]: userId, [nameof<RefreshToken>("token")]: refreshToken })
+    .orUpdate([nameof<RefreshToken>("token")], [nameof<RefreshToken>("id")])
+    .execute();
+
+  return true;
 }
 
 /**

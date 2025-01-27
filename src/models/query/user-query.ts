@@ -29,7 +29,7 @@ export async function signupUserQuery (credentials: UserModels.IAuthRequest): Pr
   try {
 
     const result: [UserModels.ITokenData] | string = await db.query(
-      `INSERT INTO "user" ("email", "password")
+      `INSERT INTO "users" ("email", "password")
       VALUES ('${credentials.email}', '${credentials.password}')
       RETURNING "id", "is_admin"`);
       return result[0];
