@@ -1,4 +1,5 @@
 import { Users } from "src/database/entities/users";
+import { RefreshTokenType } from "./auth-types";
 
 /**
  * Represents the data stored in a token, derived from the Users entity.
@@ -32,4 +33,4 @@ export type UserCredentials = Pick<Users, "email" | "password">;
  * @property id The unique identifier of the user.
  * @property refreshToken The refresh token of the user.
  */
-export type AuthDetails = Pick<Users, "id"> & { refreshToken: string };
+export type AuthDetails = Pick<Users, "id"> & RefreshTokenType;

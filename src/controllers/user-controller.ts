@@ -3,7 +3,7 @@ import randomString from "randomstring";
 
 import { createTokens } from "@util/auth";
 import { getUserByEmailQuery } from "@models/query/user-query";
-import { upsertRefreshToken } from "@models/query/refresh-token-query";
+import { deleteRefreshToken, upsertRefreshToken } from "@models/query/refresh-token-query";
 import { signupUserQuery } from "@models/query/user-query"
 import { Users } from "src/database/entities/users";
 import { UserCredentials, LoginQuery } from "@models/database/user-types";
@@ -21,7 +21,7 @@ export async function signupUserController(credentials: UserCredentials): Promis
 
   const tokens: AuthTokens | string = createTokens(userId);
 
-  const refreshTokenUpdated: boolean = await upsertRefreshToken({id: userId, refreshToken: tokens.refreshToken});
+  const refreshTokenUpdated: boolean = await upsertRefreshToken({id: userId, token: tokens.refreshToken});
 
   if (!refreshTokenUpdated)
     return "Error updating refresh token";
@@ -46,10 +46,14 @@ export async function loginUserController(credentials: UserCredentials): Promise
 
   const tokens: AuthTokens = createTokens(user.id);
 
-  const refreshTokenUpdated: boolean = await upsertRefreshToken({id: user.id, refreshToken: tokens.refreshToken});
+  const refreshTokenUpdated: boolean = await upsertRefreshToken({id: user.id, token: tokens.refreshToken});
 
   if (!refreshTokenUpdated)
     return "Error updating refresh token";
 
   return jwt.sign(tokens, jwtSecret)
+}
+
+export async function logoutUserController(userId: Users["id"]): Promise<void> {
+  await deleteRefreshToken(userId);
 }

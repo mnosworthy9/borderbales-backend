@@ -2,6 +2,7 @@ import { myDataSource } from "src/database/app-data-source";
 import { nameof } from "@util/functions";
 import { RefreshToken } from "src/database/entities/refresh-token";
 import { AuthDetails } from "@models/database/user-types";
+import { Users } from "@database/entities/users";
 
 /**
  * Insert or update refresh token into db
@@ -13,7 +14,7 @@ export async function upsertRefreshToken (authDetails: AuthDetails): Promise<boo
   const results = await myDataSource.getRepository<RefreshToken>(nameof(RefreshToken))
     .createQueryBuilder()
     .insert()
-    .values({ [nameof<RefreshToken>("id")]: authDetails.id, [nameof<RefreshToken>("token")]: authDetails.refreshToken })
+    .values({ [nameof<RefreshToken>("id")]: authDetails.id, [nameof<RefreshToken>("token")]: authDetails.token })
     .orUpdate([nameof<RefreshToken>("token")], [nameof<RefreshToken>("id")])
     .execute();
 
@@ -28,5 +29,15 @@ export async function upsertRefreshToken (authDetails: AuthDetails): Promise<boo
  */
 export async function checkRefreshTokenMatches (authDetails: AuthDetails): Promise<boolean> {
   return await myDataSource.getRepository<RefreshToken>(nameof(RefreshToken))
-    .existsBy({id: authDetails.id, token: authDetails.refreshToken});
+    .findOneBy({[nameof<RefreshToken>("id")]: authDetails.id, [nameof<RefreshToken>("token")]: authDetails.token}) !== null;
+}
+
+/**
+ * Deletes the refresh token from the database
+ * @param userId - User ID
+ * @returns Boolean indicating if the token was deleted
+ */
+export async function deleteRefreshToken (userId: Users["id"]): Promise<void> {
+  await myDataSource.getRepository<RefreshToken>(nameof(RefreshToken))
+    .delete({ [nameof<RefreshToken>("id")]: userId });
 }

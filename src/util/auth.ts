@@ -26,7 +26,10 @@ export function createTokens (userId: Users["id"]): AuthTokens {
 
 export async function verifyRefreshToken (authDetails: AuthDetails): Promise<boolean | string> {
   try {
-    jsonwebtoken.verify(authDetails.refreshToken, process.env.JWT_REFRESH_SECRET || "");
+    if (authDetails.token === undefined)
+      return "Token not found";
+    
+    jsonwebtoken.verify(authDetails.token, process.env.JWT_REFRESH_SECRET || "");
     return await checkRefreshTokenMatches(authDetails);
 
   } catch (error) {

@@ -72,6 +72,9 @@
       "@controllers/*": [
         "src/controllers/*"
       ],
+      "@database/*": [
+        "src/database/*"
+      ],
       "@models/*": [
         "src/models/*"
       ],

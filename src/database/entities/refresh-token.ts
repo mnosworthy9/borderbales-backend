@@ -19,7 +19,7 @@ export class RefreshToken {
     id!: string;
     
     @Column({ type: 'varchar', length: 512, nullable: true})
-    token!: string;
+    token?: string;
     
     @CreateDateColumn({ type: 'timestamp' })
     createdAt?: Date;
