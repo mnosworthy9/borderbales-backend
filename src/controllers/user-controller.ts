@@ -5,7 +5,7 @@ import { createTokens } from "@util/auth";
 import { getUserByEmailQuery } from "@models/query/user-query";
 import { deleteRefreshToken, upsertRefreshToken } from "@models/query/refresh-token-query";
 import { signupUserQuery } from "@models/query/user-query"
-import { Users } from "src/database/entities/users";
+import { Users } from "@database/entities/users";
 import { UserCredentials, LoginQuery } from "@models/database/user-types";
 import { AuthTokens } from "@models/interface/auth-models";
 

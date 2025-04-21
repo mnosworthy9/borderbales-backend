@@ -1,4 +1,4 @@
-import { Users } from "src/database/entities/users";
+import { Users } from "@database/entities/users";
 import { RefreshTokenType } from "./auth-types";
 
 /**

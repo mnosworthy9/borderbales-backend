@@ -2,7 +2,7 @@ import { AuthDetails } from "@models/database/user-types";
 import { AuthTokens } from "@models/interface/auth-models";
 import { checkRefreshTokenMatches } from "@models/query/refresh-token-query";
 import jsonwebtoken from "jsonwebtoken";
-import { Users } from "src/database/entities/users";
+import { Users } from "@database/entities/users";
 
 /**
  * Create access and refresh token.

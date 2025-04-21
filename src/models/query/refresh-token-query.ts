@@ -1,6 +1,6 @@
-import { myDataSource } from "src/database/app-data-source";
+import { myDataSource } from "@database/app-data-source";
 import { nameof } from "@util/functions";
-import { RefreshToken } from "src/database/entities/refresh-token";
+import { RefreshToken } from "@database/entities/refresh-token";
 import { AuthDetails } from "@models/database/user-types";
 import { Users } from "@database/entities/users";
 
