@@ -4,6 +4,10 @@
  */
 export function nameof<T>(key: keyof T): string;
 
+// export function nameof<T>(type: { new(): T }, key: keyof T): string {
+//   return `${type.name}.${String(key)}`;
+// }
+
 /**
  * 
  */

@@ -8,9 +8,9 @@ import { UserCredentials, LoginQuery } from "@models/database/user-types";
  * @returns - Details of the user to make tokens or false if the user does not exist.
  */
 export async function getUserByEmailQuery (email: Users["email"]): Promise<LoginQuery | false> {
-  return await myDataSource.getRepository<Users>(nameof(Users))
-  .createQueryBuilder()
-  .select([nameof<Users>("id"), nameof<Users>("password")])
+  return await myDataSource.getRepository(Users)
+  .createQueryBuilder(nameof(Users))
+  .select([`${nameof(Users)}.${nameof<Users>("id")}`, `${nameof(Users)}.${nameof<Users>("password")}`])
   .where({ email: email })
   .getOne() ?? false;
 }
