@@ -1,4 +1,5 @@
 import { DataSource } from "typeorm"
+import * as path from "path";
 
 import * as dotenv from "dotenv";
 dotenv.config();
@@ -10,7 +11,7 @@ export const myDataSource = new DataSource({
     username: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASSWORD,
     database: process.env.POSTGRES_DB,
-    entities: ["@database/entities/*.{ts,js}"],
+    entities: [path.resolve(__dirname, "./entities/*.{ts,js}")],
     logging: true,
     synchronize: true,
 })
