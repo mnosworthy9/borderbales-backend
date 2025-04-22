@@ -1,4 +1,3 @@
-import "module-alias/register"; // Import module-alias/register at the top of your entry file
 import logger from "jet-logger";
 import server from "./server";
 
